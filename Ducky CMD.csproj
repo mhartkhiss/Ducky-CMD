@@ -35,7 +35,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>X:\MACRODUCK\DuckyCMD\</OutputPath>
+    <OutputPath>X:\builds_debug_csharp\DuckyCMD\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -211,6 +211,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CraftingTimer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CraftingTimer.Designer.cs">
+      <DependentUpon>CraftingTimer.cs</DependentUpon>
+    </Compile>
     <Compile Include="DuckyCMD.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -223,11 +229,19 @@
     <Compile Include="DuckyVIP.Designer.cs">
       <DependentUpon>DuckyVIP.cs</DependentUpon>
     </Compile>
+    <Compile Include="Farm.cs" />
     <Compile Include="IGN_form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="IGN_form.Designer.cs">
       <DependentUpon>IGN_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Island.cs" />
+    <Compile Include="LogMessage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LogMessage.Designer.cs">
+      <DependentUpon>LogMessage.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -237,6 +251,9 @@
     <Compile Include="ToastNotification.Designer.cs">
       <DependentUpon>ToastNotification.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CraftingTimer.resx">
+      <DependentUpon>CraftingTimer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DuckyCMD.resx">
       <DependentUpon>DuckyCMD.cs</DependentUpon>
     </EmbeddedResource>
@@ -245,6 +262,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="IGN_form.resx">
       <DependentUpon>IGN_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogMessage.resx">
+      <DependentUpon>LogMessage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -288,6 +308,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="duck.ico" />
+    <None Include="Resources\mark.png" />
+    <None Include="Resources\iyellow.png" />
+    <None Include="Resources\iwater.png" />
+    <None Include="Resources\ired.png" />
+    <None Include="Resources\iice.png" />
+    <None Include="Resources\igreen.png" />
+    <None Include="Resources\ipurple.png" />
     <None Include="Resources\jackpot %281%29.png" />
     <None Include="Resources\pickaxe.png" />
     <None Include="Resources\fishing.png" />

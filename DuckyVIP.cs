@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guna.UI2.WinForms;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -14,9 +15,10 @@ namespace Ducky_CMD
     public partial class DuckyVIP : Form
     {
         private static string rootPath = @"Z:\MACRODUCK";
+        //private string alternateFilePath = $@"{rootPath}\alternate.txt";
         private string filePath = $@"{rootPath}\VIP_ON.txt";
         private bool previousFileExists = false;
-        private System.Windows.Forms.Timer checkTimer;
+        private System.Windows.Forms.Timer checkTimer, vipOnTimer, Catching_Timer, OnChain_Timer;
         private string[] modeFiles = { "mode_Mining.txt", "mode_Fishing.txt", "mode_Farming.txt",
             "mode_Crafting.txt", "mode_OpenGift.txt"};
         private string[] modeMCR = {"4-mining.mcr", "1-START-duckyFishing.mcr", "6-START-farming only.mcr",
@@ -47,6 +49,9 @@ namespace Ducky_CMD
         private const int SW_RESTORE = 9;
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOZORDER = 0x0004;
+        Island island = new Island();
+        private string catching_message = null, onchain_message = null;
+        private int catching_counter = 0, onchain_counter = 0;
 
 
         public DuckyVIP()
@@ -65,12 +70,60 @@ namespace Ducky_CMD
             checkTimer.Interval = 1000; // Check every second
             checkTimer.Tick += CheckTimer_Tick;
             checkTimer.Start();
+
+            // Set up VIP_ON timer
+            vipOnTimer = new System.Windows.Forms.Timer();
+            vipOnTimer.Interval = 50; // Check every second
+            vipOnTimer.Tick += VipOnTimer_Tick;
+            vipOnTimer.Start();
+
+
+            
+            Catching_Timer = new System.Windows.Forms.Timer();
+            Catching_Timer.Interval = 1000; // Check every second
+            Catching_Timer.Tick += Catching_timer_Tick;
+            Catching_Timer.Enabled = false;
+
+            OnChain_Timer = new System.Windows.Forms.Timer();
+            OnChain_Timer.Interval = 1000; // Check every second
+            OnChain_Timer.Tick += OnChain_timer_Tick;
+            OnChain_Timer.Enabled = false;
+        }
+
+        private void VipOnTimer_Tick(object sender, EventArgs e)
+        {
+           CheckFileAndSendKeys();
         }
 
         private void CheckTimer_Tick(object sender, EventArgs e)
         {
-            CheckFileAndSendKeys();
             CheckModeFiles();
+        }
+
+        private void Catching_timer_Tick(object sender, EventArgs e)
+        {
+            if (catching_counter > 70)
+            {
+                catching_counter = 0;
+                catching_message = null;
+                Catching_Timer.Stop();
+                Catching_Timer.Enabled = false;
+            }
+            else 
+                catching_counter++;
+        }
+
+        private void OnChain_timer_Tick(object sender, EventArgs e)
+        {
+            if (onchain_counter > 70)
+            {
+                onchain_counter = 0;
+                onchain_message = null;
+                OnChain_Timer.Stop();
+                OnChain_Timer.Enabled = false;
+            }
+            else
+                onchain_counter++;
         }
 
         private void CheckModeFiles()
@@ -84,11 +137,14 @@ namespace Ducky_CMD
                 {
                     if (windowColor != modeColors[i])
                     {
-                        kill_process("MacroRecorder");
-                        OpenFileMinimized($@"{rootPath}\{modeMCR[i]}");
+                        System.Threading.Tasks.Task.Run(() => kill_process("MacroRecorder"));
+                        System.Threading.Tasks.Task.Run(() => OpenFileMinimized($@"{rootPath}\{modeMCR[i]}"));
                         guna2HtmlLabel1.Text = "Mode: "+modeNames[i];
                         BackColor = modeColors[i];
                         windowColor = modeColors[i];
+                        System.Threading.Tasks.Task.Run(() => duckyVIP_windowSwitch());
+
+
                     }
                     break;
                 }
@@ -114,11 +170,20 @@ namespace Ducky_CMD
                 };
 
                 Process.Start(startInfo);
-                Console.WriteLine($"Started {mcrFilePath} in minimized window");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error starting process: {ex.Message}");
+               
+            }
+        }
+        private void duckyVIP_windowSwitch()
+        {
+            IntPtr chromeHandle = FindWindow(null, "DuckyVIP");
+            if (chromeHandle != IntPtr.Zero)
+            {
+                SetForegroundWindow(chromeHandle);
+                System.Threading.Thread.Sleep(100);
+                SendKeys.SendWait("{ENTER}");
             }
         }
 
@@ -128,26 +193,17 @@ namespace Ducky_CMD
 
             if (currentFileExists != previousFileExists)
             {
-                IntPtr chromeHandle = FindWindow(null, "DuckyVIP");
-                if (chromeHandle != IntPtr.Zero)
-                {
-                    SetForegroundWindow(chromeHandle);
-                    // Wait a bit for the window switch to take effect
-                    System.Threading.Thread.Sleep(100);
 
                     if (currentFileExists)
                     {
                         SendKeys.SendWait("^p");
+                        
+                        
                     }
                     else
                     {
                         SendKeys.SendWait("^q");
                     }
-                }
-                else
-                {
-                    Console.WriteLine("Failed to find the DuckyCity - Google Chrome window.");
-                }
 
                 previousFileExists = currentFileExists;
             }
@@ -201,16 +257,23 @@ namespace Ducky_CMD
             }
         }
 
+        public static string ExtractMessage(string text)
+        {
+            // Remove tabs, join all lines, and trim the input text
+            text = Regex.Replace(text, @"\s+", " ").Trim();
+
+            // Define the regex pattern
+            string pattern = @"(Congratulations.*?(Anglerfish|Swordfish|Shark|box))";
+
+            // Perform the regex match
+            Match match = Regex.Match(text, pattern, RegexOptions.Singleline);
+
+            // Return the matched text if found, otherwise return an empty string
+            return match.Success ? match.Groups[1].Value : string.Empty;
+        }
+
         private void CheckForKeywords()
         {
-            /*if (File.Exists(@"Z:\MACRODUCK\lastjackpot.txt"))
-            {
-                FileInfo fi = new FileInfo(@"Z:\MACRODUCK\lastjackpot.txt");
-                if (fi.LastWriteTime > DateTime.Now.AddMinutes(-1))
-                {
-                    return;
-                }
-            }*/
 
             string keywordsFilePath = @"Z:\MACRODUCK\names.txt";
             string counterFilePath = @"Z:\MACRODUCK\jackpot_counter.txt";
@@ -254,7 +317,7 @@ namespace Ducky_CMD
 
                                 var foundKeyword = keywords.FirstOrDefault(keyword => text.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0);
 
-                                if (!string.IsNullOrEmpty(foundKeyword) && !text.Contains("Onchain"))
+                                if (!string.IsNullOrEmpty(foundKeyword) && !text.Contains("Onchain") && !text.Contains("catching"))
                                 {
 
                                     if (File.Exists(@"Z:\MACRODUCK\lastjackpot.txt"))
@@ -286,6 +349,43 @@ namespace Ducky_CMD
                                         }
                                     }
                                     RemoveFileSafely(@"Z:\MACRODUCK\VIP_ON.txt");
+                                }
+                                else if (!string.IsNullOrEmpty(foundKeyword) && text.Contains("catching") && catching_message != text)
+                                {
+                                    catching_message = text;
+                                    string result = ExtractMessage(text);
+                                    using (StreamWriter sw = File.AppendText(@"Z:\MACRODUCK\logs.txt"))
+                                    {
+                                        
+                                        sw.WriteLine($"{result}/{DateTime.Now.ToString("MMMM dd, yyyy (hh:mm:ss tt)")}");
+                                    }
+                                    catching_counter = 0;
+                                    //check if the timer is running
+                                    if (!Catching_Timer.Enabled)
+                                    {
+                                        Catching_Timer.Enabled = true;
+                                        Catching_Timer.Start();
+                                    }
+
+                                }
+
+                                else if (!string.IsNullOrEmpty(foundKeyword) && text.Contains("Onchain") && onchain_message != text)
+                                {
+                                    onchain_message = text;
+                                    string result = ExtractMessage(text);
+                                    using (StreamWriter sw = File.AppendText(@"Z:\MACRODUCK\logs.txt"))
+                                    {
+                                        sw.WriteLine($"{result}/{DateTime.Now.ToString("MMMM dd, yyyy (hh:mm:ss tt)")}");
+
+                                    }
+                                    onchain_counter = 0;
+                                    //check if the timer is running
+                                    if (!OnChain_Timer.Enabled)
+                                    {
+                                        OnChain_Timer.Enabled = true;
+                                        OnChain_Timer.Start();
+
+                                    }
                                 }
                             }
                         }
@@ -370,10 +470,13 @@ namespace Ducky_CMD
 
         private void guna2HtmlLabel1_Click(object sender, EventArgs e)
         {
+            island.Save();
 
+            /*
             string keywordsFilePath = @"Z:\MACRODUCK\names.txt";
 
-            int left = 66, top = 198, width = 395, height = 87;
+            //int left = 785, top = 472, width = 153, height = 140;
+            int left = 908, top = 222, width = 80, height = 29;
             Rectangle region = new Rectangle(left, top, width, height);
 
             var keywords = LoadKeywords(keywordsFilePath);
@@ -399,23 +502,10 @@ namespace Ducky_CMD
                             {
                                 text = page.GetText();
                                 MessageBox.Show(text);
+
                             }
                         }
                     }
-
-                    var foundKeyword = keywords.FirstOrDefault(keyword => text.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0);
-
-                    if (!string.IsNullOrEmpty(foundKeyword))
-                    {
-
-                        if (foundKeyword != "winning" && foundKeyword != "for")
-                        {
-                            MessageBox.Show($"Keyword '{foundKeyword}' found!");
-                        }
-
-
-                    }
-
 
                 }
             }
@@ -423,6 +513,9 @@ namespace Ducky_CMD
             {
                 Console.WriteLine($"Error in CheckForKeywords: {ex.Message}");
             }
+
+
+            */
         }
 
         private void toggle_IsolateMSpeed_CheckedChanged(object sender, EventArgs e)
@@ -442,6 +535,11 @@ namespace Ducky_CMD
         {
             //set clipboard to the selected value
             Clipboard.SetText(comboBox_miningSpeed.SelectedItem.ToString());
+        }
+
+        private void toggleAlternate_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void guna2PictureBox2_Click(object sender, EventArgs e)
