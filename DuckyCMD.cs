@@ -898,8 +898,19 @@ namespace Ducky_CMD
 
         private void guna2PictureBox8_Click(object sender, EventArgs e)
         {
-            //open the directory/farmQueue folder
-            System.Diagnostics.Process.Start(directory + "/farmQueue");
+            //delete all txt files in the directory/farmQueue folder show a confirmation message
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to clear the farm queue?", "Clear Farm Queue", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                farmWatcher.EnableRaisingEvents = false;
+                string[] files = Directory.GetFiles(directory + "/farmQueue", "*.txt");
+                foreach (string file in files)
+                {
+                    File.Delete(file);
+                }
+                DashboardUpdate();
+                farmWatcher.EnableRaisingEvents = true;
+            }
 
         }
 

@@ -79,6 +79,10 @@ namespace Ducky_CMD
                             Thread.Sleep(1000); // Sleep for 1 second before retrying
                         }
                     }
+                    else {
+                        Clipboard.SetText("continue");
+                        found = true;
+                    }
                 }
             }
             catch (IOException e)

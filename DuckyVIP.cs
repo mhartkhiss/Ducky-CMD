@@ -18,7 +18,7 @@ namespace Ducky_CMD
         //private string alternateFilePath = $@"{rootPath}\alternate.txt";
         private string filePath = $@"{rootPath}\VIP_ON.txt";
         private bool previousFileExists = false;
-        private System.Windows.Forms.Timer checkTimer, vipOnTimer, Catching_Timer, OnChain_Timer;
+        private System.Windows.Forms.Timer checkTimer, vipOnTimer, Catching_Timer, OnChain_Timer, Mining_Timer;
         private string[] modeFiles = { "mode_Mining.txt", "mode_Fishing.txt", "mode_Farming.txt",
             "mode_Crafting.txt", "mode_OpenGift.txt",  "mode_AutoMining.txt", "mode_FullAuto.txt"};
         private string[] modeMCR = {"4-mining.mcr", "1-START-duckyFishing.mcr", "6-START-farming only.mcr",
@@ -50,8 +50,8 @@ namespace Ducky_CMD
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOZORDER = 0x0004;
         Island island = new Island();
-        private string catching_message = null, onchain_message = null;
-        private int catching_counter = 0, onchain_counter = 0;
+        private string catching_message = null, onchain_message = null, mining_message = null;
+        private int catching_counter = 0, onchain_counter = 0, mining_counter = 0;
 
 
         public DuckyVIP()
@@ -126,6 +126,19 @@ namespace Ducky_CMD
                 onchain_counter++;
         }
 
+        private void Mining_timer_Tick(object sender, EventArgs e)
+        {
+            if (mining_counter > 70)
+            {
+                mining_counter = 0;
+                mining_message = null;
+                Mining_Timer.Stop();
+                Mining_Timer.Enabled = false;
+            }
+            else
+                mining_counter++;
+        }
+
         private void CheckModeFiles()
         {
             for (int i = 0; i < modeFiles.Length; i++)
@@ -172,10 +185,11 @@ namespace Ducky_CMD
                 };
 
                 Process.Start(startInfo);
+                
             }
             catch (Exception ex)
             {
-               
+               MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void duckyVIP_windowSwitch()
@@ -301,117 +315,101 @@ namespace Ducky_CMD
 
             var keywords = LoadKeywords(keywordsFilePath);
             //add "winning" and "for" to the list of keywords
-            keywords = keywords.Concat(new string[] { "for"}).ToArray();
+            //keywords = keywords.Concat(new string[] { "for"}).ToArray();
 
             while (isCheckingKeywords)
             {
-                if (File.Exists(@"Z:\MACRODUCK\lastjackpot.txt"))
+                try
                 {
-                    FileInfo fi = new FileInfo(@"Z:\MACRODUCK\lastjackpot.txt");
-                    if (fi.LastWriteTime < DateTime.Now.AddMinutes(-1))
+                    using (Bitmap screenshot = new Bitmap(width, height))
                     {
-                        try
+                        using (Graphics g = Graphics.FromImage(screenshot))
                         {
-                            using (Bitmap screenshot = new Bitmap(width, height))
+                            g.CopyFromScreen(new Point(left, top), Point.Empty, new Size(width, height));
+                        }
+
+                        string text;
+                        using (var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default))
+                        {
+                            using (var img = PixConverter.ToPix(screenshot))
                             {
-                                using (Graphics g = Graphics.FromImage(screenshot))
+                                using (var page = engine.Process(img))
                                 {
-                                    g.CopyFromScreen(new Point(left, top), Point.Empty, new Size(width, height));
-                                }
-
-                                string text;
-                                using (var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default))
-                                {
-                                    using (var img = PixConverter.ToPix(screenshot))
-                                    {
-                                        using (var page = engine.Process(img))
-                                        {
-                                            text = page.GetText();
-                                        }
-                                    }
-                                }
-
-                                var foundKeyword = keywords.FirstOrDefault(keyword => text.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0);
-
-                                if (!string.IsNullOrEmpty(foundKeyword) && !text.Contains("Onchain") && !text.Contains("catching"))
-                                {
-
-                                    if (File.Exists(@"Z:\MACRODUCK\lastjackpot.txt"))
-                                    {
-                                        FileInfo fi2 = new FileInfo(@"Z:\MACRODUCK\lastjackpot.txt");
-                                        if (fi2.LastWriteTime < DateTime.Now.AddMinutes(-1))
-                                        {
-                                            Console.WriteLine($"Keyword '{foundKeyword}' found!");
-                                            if (foundKeyword != "for")
-                                            {
-                                                using (StreamWriter sw = File.CreateText(@"Z:\MACRODUCK\jackpot.config"))
-                                                {
-                                                    sw.WriteLine(foundKeyword);
-                                                    sw.WriteLine($"got <b>{ExtractNumberFromText(text)} $DCM</b> when mining.");
-                                                }
-                                                IncrementCounter(counterFilePath);
-                                                Thread.Sleep(100);
-                                                int number = ExtractNumberFromText(text);
-                                                if (number > 0)
-                                                {
-                                                    IncrementTotalDcm(totalDcmFilePath, number);
-                                                    Console.WriteLine($"Incremented total_dcm by {number}");
-                                                    Thread.Sleep(100);
-                                                }
-                                            }
-
-                                            File.SetLastWriteTime(@"Z:\MACRODUCK\lastjackpot.txt", DateTime.Now);
-                                            
-                                        }
-                                    }
-                                    RemoveFileSafely(@"Z:\MACRODUCK\VIP_ON.txt");
-                                }
-                                else if (!string.IsNullOrEmpty(foundKeyword) && text.Contains("catching") && catching_message != text)
-                                {
-                                    catching_message = text;
-                                    string result = ExtractMessage(text);
-                                    using (StreamWriter sw = File.AppendText(@"Z:\MACRODUCK\logs.txt"))
-                                    {
-                                        
-                                        sw.WriteLine($"{result}/{DateTime.Now.ToString("MMMM dd, yyyy (hh:mm:ss tt)")}");
-                                    }
-                                    catching_counter = 0;
-                                    //check if the timer is running
-                                    if (!Catching_Timer.Enabled)
-                                    {
-                                        Catching_Timer.Enabled = true;
-                                        Catching_Timer.Start();
-                                    }
-
-                                }
-
-                                else if (!string.IsNullOrEmpty(foundKeyword) && text.Contains("Onchain") && onchain_message != text)
-                                {
-                                    onchain_message = text;
-                                    string result = ExtractMessage(text);
-                                    using (StreamWriter sw = File.AppendText(@"Z:\MACRODUCK\logs.txt"))
-                                    {
-                                        sw.WriteLine($"{result}/{DateTime.Now.ToString("MMMM dd, yyyy (hh:mm:ss tt)")}");
-
-                                    }
-                                    onchain_counter = 0;
-                                    //check if the timer is running
-                                    if (!OnChain_Timer.Enabled)
-                                    {
-                                        OnChain_Timer.Enabled = true;
-                                        OnChain_Timer.Start();
-
-                                    }
+                                    text = page.GetText();
                                 }
                             }
                         }
-                        catch (Exception ex)
+
+                        var foundKeyword = keywords.FirstOrDefault(keyword => text.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0);
+
+                        if (text.Contains("winning") && mining_message != text)
                         {
-                            Console.WriteLine($"Error in CheckForKeywords: {ex.Message}");
+                            mining_message = text;
+                            if (!string.IsNullOrEmpty(foundKeyword)) { 
+                                using (StreamWriter sw = File.CreateText(@"Z:\MACRODUCK\jackpot.config"))
+                                {
+                                    sw.WriteLine(foundKeyword);
+                                    sw.WriteLine($"got <b>{ExtractNumberFromText(text)} $DCM</b> when mining.");
+                                }
+                                IncrementCounter(counterFilePath);
+                                int number = ExtractNumberFromText(text);
+                                if (number > 0)
+                                {
+                                    IncrementTotalDcm(totalDcmFilePath, number);
+                                }
+                            }
+                            File.SetLastWriteTime(@"Z:\MACRODUCK\lastjackpot.txt", DateTime.Now);
+                            mining_counter = 0;
+                            if (!Mining_Timer.Enabled)
+                            {
+                                Mining_Timer.Enabled = true;
+                                Mining_Timer.Start();
+                            }
+                        }
+
+                        else if (!string.IsNullOrEmpty(foundKeyword) && text.Contains("catching") && catching_message != text)
+                        {
+                            catching_message = text;
+                            string result = ExtractMessage(text);
+                            using (StreamWriter sw = File.AppendText(@"Z:\MACRODUCK\logs.txt"))
+                            {
+
+                                sw.WriteLine($"{result}/{DateTime.Now.ToString("MMMM dd, yyyy (hh:mm:ss tt)")}");
+                            }
+                            catching_counter = 0;
+                            if (!Catching_Timer.Enabled)
+                            {
+                                Catching_Timer.Enabled = true;
+                                Catching_Timer.Start();
+                            }
+
+                        }
+
+                        else if (!string.IsNullOrEmpty(foundKeyword) && text.Contains("Onchain") && onchain_message != text)
+                        {
+                            onchain_message = text;
+                            string result = ExtractMessage(text);
+                            using (StreamWriter sw = File.AppendText(@"Z:\MACRODUCK\logs.txt"))
+                            {
+                                sw.WriteLine($"{result}/{DateTime.Now.ToString("MMMM dd, yyyy (hh:mm:ss tt)")}");
+
+                            }
+                            onchain_counter = 0;
+                            //check if the timer is running
+                            if (!OnChain_Timer.Enabled)
+                            {
+                                OnChain_Timer.Enabled = true;
+                                OnChain_Timer.Start();
+
+                            }
                         }
                     }
                 }
-                
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in CheckForKeywords: {ex.Message}");
+                }
+
 
                 Thread.Sleep(500);  // Wait for 2 seconds before checking again
             }
