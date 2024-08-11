@@ -20,14 +20,14 @@ namespace Ducky_CMD
         private FileSystemWatcher multiFileWatcher, islandWatcher, farmWatcher;
         private string[] file_list = { "500.txt", "1000.txt", "2000.txt", "3000.txt", "hold.txt" };
         private string[] mode_list = { "mode_Mining.txt", "mode_Fishing.txt", "mode_Farming.txt", 
-            "mode_Crafting.txt", "mode_OpenGift.txt"};
+            "mode_Crafting.txt", "mode_OpenGift.txt", "mode_AutoMining.txt", "mode_FullAuto.txt"};
         private Color[] modeColors = { Color.FromArgb(255, 236, 161), Color.FromArgb(145, 210, 255), Color.FromArgb(164, 255, 164),
-                   Color.FromArgb(255, 185, 79), Color.FromArgb(233, 154, 255)};
+                   Color.FromArgb(255, 185, 79), Color.FromArgb(233, 154, 255), Color.FromArgb(141, 111, 100), Color.FromArgb(254, 155, 156)};
         private string[] gap_list = null;
         private string dummyText = null;
         private int counter=0, minutes=0, seconds = 0;
         private Image[] mode_icon = { Properties.Resources.pickaxe, Properties.Resources.fishing, Properties.Resources.carrots,
-            Properties.Resources.blacksmith, Properties.Resources.gift};
+            Properties.Resources.blacksmith, Properties.Resources.gift, Properties.Resources.pickaxe, Properties.Resources.pickaxe};
         private int deducted_seconds = 12;
         IGN_form ign_form = null;
         private bool showToasts = false, miningStarted = false, logSingleLine = false;
@@ -221,7 +221,17 @@ namespace Ducky_CMD
                             new ToastNotification(ign, dcm).Show();
                             showToasts = false;
                             writeLog(ign + " " + dcm);
-                            System.Threading.Tasks.Task.Run(() => soundPlayer("winning_jackpot.wav"));
+                            //if Computer name is "MAKIZZ-PC" play winning_jackpot2.wav
+                            if (Environment.MachineName == "MAKIZZ-PC")
+                            {
+                                System.Threading.Tasks.Task.Run(() => soundPlayer("winning_jackpot.wav"));
+                            }
+                            else
+                            {
+                                System.Threading.Tasks.Task.Run(() => soundPlayer("winning_jackpot2.wav"));
+
+                            }
+                            
                         }
                         catch (IOException ex)
                         {
@@ -909,8 +919,10 @@ namespace Ducky_CMD
             DialogResult dialogResult = MessageBox.Show("Are you sure you want to clear the logs?", "Clear Logs", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
+                multiFileWatcher.EnableRaisingEvents = false;
                 File.WriteAllText(directory + "/logs.txt", "");
                 refreshLogs();
+                multiFileWatcher.EnableRaisingEvents = true;
             }
 
         }
@@ -919,6 +931,11 @@ namespace Ducky_CMD
         {
             //open the directory/islands folder
             System.Diagnostics.Process.Start(directory + "/islands");
+        }
+
+        private void guna2ContainerControl7_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void guna2Button2_Click(object sender, EventArgs e)
@@ -979,7 +996,6 @@ namespace Ducky_CMD
                 if(label_autoStartTime.Text != "-----------")
                 {
                     label_timeDiffStart.Visible = true;
-                    comboBox_mode.SelectedIndex = 0;
                 }
             }
             else

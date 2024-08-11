@@ -38,6 +38,8 @@
             this.btn_red = new Guna.UI2.WinForms.Guna2Button();
             this.btn_yellow = new Guna.UI2.WinForms.Guna2Button();
             this.txt_island = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2ContainerControl1 = new Guna.UI2.WinForms.Guna2ContainerControl();
+            this.guna2ContainerControl1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txt_timer
@@ -45,11 +47,11 @@
             this.txt_timer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_timer.AutoSize = false;
             this.txt_timer.BackColor = System.Drawing.Color.Transparent;
-            this.txt_timer.Font = new System.Drawing.Font("Courier New", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_timer.Font = new System.Drawing.Font("Courier New", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_timer.ForeColor = System.Drawing.Color.Aqua;
-            this.txt_timer.Location = new System.Drawing.Point(0, 10);
+            this.txt_timer.Location = new System.Drawing.Point(-16, 3);
             this.txt_timer.Name = "txt_timer";
-            this.txt_timer.Size = new System.Drawing.Size(223, 33);
+            this.txt_timer.Size = new System.Drawing.Size(282, 46);
             this.txt_timer.TabIndex = 0;
             this.txt_timer.Text = "1h 48m 2s";
             this.txt_timer.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
@@ -67,9 +69,9 @@
             this.btn_water.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btn_water.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btn_water.ForeColor = System.Drawing.Color.White;
-            this.btn_water.Location = new System.Drawing.Point(35, 57);
+            this.btn_water.Location = new System.Drawing.Point(62, 71);
             this.btn_water.Name = "btn_water";
-            this.btn_water.Size = new System.Drawing.Size(18, 18);
+            this.btn_water.Size = new System.Drawing.Size(30, 30);
             this.btn_water.TabIndex = 1;
             this.btn_water.Click += new System.EventHandler(this.guna2Button1_Click);
             // 
@@ -83,9 +85,9 @@
             this.btn_ice.FillColor = System.Drawing.Color.LightCyan;
             this.btn_ice.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btn_ice.ForeColor = System.Drawing.Color.White;
-            this.btn_ice.Location = new System.Drawing.Point(59, 57);
+            this.btn_ice.Location = new System.Drawing.Point(107, 71);
             this.btn_ice.Name = "btn_ice";
-            this.btn_ice.Size = new System.Drawing.Size(18, 18);
+            this.btn_ice.Size = new System.Drawing.Size(30, 30);
             this.btn_ice.TabIndex = 2;
             // 
             // btn_purple
@@ -98,9 +100,9 @@
             this.btn_purple.FillColor = System.Drawing.Color.Plum;
             this.btn_purple.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btn_purple.ForeColor = System.Drawing.Color.White;
-            this.btn_purple.Location = new System.Drawing.Point(83, 57);
+            this.btn_purple.Location = new System.Drawing.Point(152, 71);
             this.btn_purple.Name = "btn_purple";
-            this.btn_purple.Size = new System.Drawing.Size(18, 18);
+            this.btn_purple.Size = new System.Drawing.Size(30, 30);
             this.btn_purple.TabIndex = 3;
             // 
             // btn_green
@@ -113,9 +115,9 @@
             this.btn_green.FillColor = System.Drawing.Color.LightGreen;
             this.btn_green.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btn_green.ForeColor = System.Drawing.Color.White;
-            this.btn_green.Location = new System.Drawing.Point(107, 57);
+            this.btn_green.Location = new System.Drawing.Point(196, 71);
             this.btn_green.Name = "btn_green";
-            this.btn_green.Size = new System.Drawing.Size(18, 18);
+            this.btn_green.Size = new System.Drawing.Size(30, 30);
             this.btn_green.TabIndex = 4;
             // 
             // btn_red
@@ -128,9 +130,9 @@
             this.btn_red.FillColor = System.Drawing.Color.IndianRed;
             this.btn_red.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btn_red.ForeColor = System.Drawing.Color.White;
-            this.btn_red.Location = new System.Drawing.Point(131, 57);
+            this.btn_red.Location = new System.Drawing.Point(241, 71);
             this.btn_red.Name = "btn_red";
-            this.btn_red.Size = new System.Drawing.Size(18, 18);
+            this.btn_red.Size = new System.Drawing.Size(30, 30);
             this.btn_red.TabIndex = 5;
             // 
             // btn_yellow
@@ -143,9 +145,9 @@
             this.btn_yellow.FillColor = System.Drawing.Color.Khaki;
             this.btn_yellow.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btn_yellow.ForeColor = System.Drawing.Color.White;
-            this.btn_yellow.Location = new System.Drawing.Point(155, 57);
+            this.btn_yellow.Location = new System.Drawing.Point(285, 71);
             this.btn_yellow.Name = "btn_yellow";
-            this.btn_yellow.Size = new System.Drawing.Size(18, 18);
+            this.btn_yellow.Size = new System.Drawing.Size(30, 30);
             this.btn_yellow.TabIndex = 6;
             // 
             // txt_island
@@ -153,32 +155,45 @@
             this.txt_island.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_island.AutoSize = false;
             this.txt_island.BackColor = System.Drawing.Color.Transparent;
-            this.txt_island.Font = new System.Drawing.Font("Courier New", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_island.ForeColor = System.Drawing.Color.Silver;
-            this.txt_island.Location = new System.Drawing.Point(176, 49);
+            this.txt_island.Font = new System.Drawing.Font("Courier New", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_island.ForeColor = System.Drawing.Color.GhostWhite;
+            this.txt_island.Location = new System.Drawing.Point(240, 19);
             this.txt_island.Name = "txt_island";
-            this.txt_island.Size = new System.Drawing.Size(110, 33);
+            this.txt_island.Size = new System.Drawing.Size(101, 27);
             this.txt_island.TabIndex = 7;
             this.txt_island.Text = "#0000";
             this.txt_island.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // guna2ContainerControl1
+            // 
+            this.guna2ContainerControl1.BorderColor = System.Drawing.Color.Black;
+            this.guna2ContainerControl1.BorderRadius = 10;
+            this.guna2ContainerControl1.Controls.Add(this.txt_island);
+            this.guna2ContainerControl1.Controls.Add(this.txt_timer);
+            this.guna2ContainerControl1.FillColor = System.Drawing.Color.RosyBrown;
+            this.guna2ContainerControl1.Location = new System.Drawing.Point(19, 12);
+            this.guna2ContainerControl1.Name = "guna2ContainerControl1";
+            this.guna2ContainerControl1.Size = new System.Drawing.Size(341, 49);
+            this.guna2ContainerControl1.TabIndex = 9;
+            this.guna2ContainerControl1.Text = "guna2ContainerControl1";
             // 
             // CraftingTimer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(292, 89);
-            this.Controls.Add(this.txt_island);
+            this.BackColor = System.Drawing.Color.Gray;
+            this.ClientSize = new System.Drawing.Size(380, 111);
+            this.Controls.Add(this.guna2ContainerControl1);
             this.Controls.Add(this.btn_yellow);
             this.Controls.Add(this.btn_red);
             this.Controls.Add(this.btn_green);
             this.Controls.Add(this.btn_purple);
             this.Controls.Add(this.btn_ice);
             this.Controls.Add(this.btn_water);
-            this.Controls.Add(this.txt_timer);
             this.Name = "CraftingTimer";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CraftingTimer";
+            this.guna2ContainerControl1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -194,5 +209,6 @@
         private Guna.UI2.WinForms.Guna2Button btn_red;
         private Guna.UI2.WinForms.Guna2Button btn_yellow;
         private Guna.UI2.WinForms.Guna2HtmlLabel txt_island;
+        private Guna.UI2.WinForms.Guna2ContainerControl guna2ContainerControl1;
     }
 }

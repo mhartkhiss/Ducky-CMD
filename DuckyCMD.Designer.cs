@@ -578,6 +578,7 @@
             this.guna2ContainerControl7.Size = new System.Drawing.Size(260, 40);
             this.guna2ContainerControl7.TabIndex = 14;
             this.guna2ContainerControl7.Text = "guna2ContainerControl7";
+            this.guna2ContainerControl7.Click += new System.EventHandler(this.guna2ContainerControl7_Click);
             // 
             // guna2PictureBox8
             // 
@@ -1641,7 +1642,9 @@
             "Fishing",
             "Farming",
             "Crafting",
-            "Open Gift"});
+            "Open Gift",
+            "Auto Mining",
+            "Full Auto"});
             this.comboBox_mode.Location = new System.Drawing.Point(81, 11);
             this.comboBox_mode.Name = "comboBox_mode";
             this.comboBox_mode.Size = new System.Drawing.Size(140, 36);

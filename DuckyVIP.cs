@@ -20,12 +20,12 @@ namespace Ducky_CMD
         private bool previousFileExists = false;
         private System.Windows.Forms.Timer checkTimer, vipOnTimer, Catching_Timer, OnChain_Timer;
         private string[] modeFiles = { "mode_Mining.txt", "mode_Fishing.txt", "mode_Farming.txt",
-            "mode_Crafting.txt", "mode_OpenGift.txt"};
+            "mode_Crafting.txt", "mode_OpenGift.txt",  "mode_AutoMining.txt", "mode_FullAuto.txt"};
         private string[] modeMCR = {"4-mining.mcr", "1-START-duckyFishing.mcr", "6-START-farming only.mcr",
-        "7-START-Crafting.mcr", "9-START-OpenGift.mcr"};
-        private string[] modeNames = { "Mining", "Fishing", "Farming", "Crafting", "Open Gift" };
+        "7-START-Crafting.mcr", "9-START-OpenGift.mcr", "4-FullAutoMining.mcr", "5-START-mining+farming+fishing.mcr"};
+        private string[] modeNames = { "Mining", "Fishing", "Farming", "Crafting", "Open Gift", "Auto Mining", "Full Auto" };
         private Color[] modeColors = { Color.FromArgb(255, 236, 161), Color.FromArgb(145, 210, 255), Color.FromArgb(164, 255, 164),
-                   Color.FromArgb(255, 185, 79), Color.FromArgb(233, 154, 255)};
+                   Color.FromArgb(255, 185, 79), Color.FromArgb(233, 154, 255), Color.FromArgb(141, 111, 100), Color.FromArgb(254, 155, 156)};
         private Color windowColor = Color.FromArgb(0, 2, 255);
         private Thread keywordCheckThread, miningThread;
         private bool isCheckingKeywords;
@@ -137,12 +137,14 @@ namespace Ducky_CMD
                 {
                     if (windowColor != modeColors[i])
                     {
-                        System.Threading.Tasks.Task.Run(() => kill_process("MacroRecorder"));
-                        System.Threading.Tasks.Task.Run(() => OpenFileMinimized($@"{rootPath}\{modeMCR[i]}"));
-                        guna2HtmlLabel1.Text = "Mode: "+modeNames[i];
-                        BackColor = modeColors[i];
-                        windowColor = modeColors[i];
-                        System.Threading.Tasks.Task.Run(() => duckyVIP_windowSwitch());
+                        if (!toggle_leader.Checked) { 
+                            System.Threading.Tasks.Task.Run(() => kill_process("MacroRecorder"));
+                            System.Threading.Tasks.Task.Run(() => OpenFileMinimized($@"{rootPath}\{modeMCR[i]}"));
+                            guna2HtmlLabel1.Text = "Mode: "+modeNames[i];
+                            BackColor = modeColors[i];
+                            windowColor = modeColors[i];
+                            System.Threading.Tasks.Task.Run(() => duckyVIP_windowSwitch());
+                        }
 
 
                     }
@@ -189,6 +191,13 @@ namespace Ducky_CMD
 
         private void CheckFileAndSendKeys()
         {
+
+            if (toggle_leader.Checked) { 
+            
+                return;
+            }
+
+
             bool currentFileExists = File.Exists(filePath);
 
             if (currentFileExists != previousFileExists)
@@ -196,13 +205,15 @@ namespace Ducky_CMD
 
                     if (currentFileExists)
                     {
-                        SendKeys.SendWait("^p");
+                        
+                            SendKeys.SendWait("^p");
                         
                         
                     }
                     else
                     {
-                        SendKeys.SendWait("^q");
+                        
+                            SendKeys.SendWait("^q");
                     }
 
                 previousFileExists = currentFileExists;
@@ -212,10 +223,15 @@ namespace Ducky_CMD
         
         private void guna2ToggleSwitch1_CheckedChanged(object sender, EventArgs e)
         {
-            guna2PictureBox2.Visible = guna2ToggleSwitch1.Checked;
-            guna2PictureBox1.Visible = !guna2ToggleSwitch1.Checked;
+            System.Threading.Tasks.Task.Run(() => kill_process("MacroRecorder"));
+            System.Threading.Tasks.Task.Run(() => OpenFileMinimized($@"{rootPath}\0-leader_recon.mcr"));
+            guna2HtmlLabel1.Text = "Mode: AFK Leader";
+            BackColor = ColorTranslator.FromHtml("#FD8686");
 
-            if (guna2ToggleSwitch1.Checked)
+            guna2PictureBox2.Visible = toggle_leader.Checked;
+            guna2PictureBox1.Visible = !toggle_leader.Checked;
+
+            if (toggle_leader.Checked)
             {
                 SwitchAndResizeWindow("DuckyCity - Google Chrome", 400, 700);
                 isCheckingKeywords = true;

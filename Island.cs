@@ -120,18 +120,20 @@ namespace Ducky_CMD
 
             if (islandType == "random")
             {
-                //get the subDirectory of parentFolder that has the most files
-                string folder = Directory.GetDirectories(parentFolder).OrderByDescending(d => new System.IO.DirectoryInfo(d).GetFiles().Length).FirstOrDefault();
+                // Get the subdirectory of parentFolder that has the most .txt files
+                string folder = Directory.GetDirectories(parentFolder)
+                    .OrderByDescending(d => new DirectoryInfo(d).GetFiles("*.txt").Length)
+                    .FirstOrDefault();
+
                 if (folder != null)
                 {
-                    //get random .txt file from the folder
+                    // Get a random .txt file from the folder
                     string path = Directory.GetFiles(folder, "*.txt").OrderBy(f => Guid.NewGuid()).FirstOrDefault();
                     if (path != null)
                     {
                         string islandNumber = File.ReadAllText(path);
                         Clipboard.SetText(islandNumber);
                     }
-
                 }
             }
             else

@@ -189,6 +189,36 @@ namespace Ducky_CMD
             int minutes = (craftingTime % 3600) / 60;
             int seconds = craftingTime % 60;
 
+            //if C:\px_"anytext".txt exists then set background to Control
+            if (System.IO.File.Exists(@"C:\px_green.txt"))
+            {
+                BackColor = ColorTranslator.FromHtml("#89C651");
+            }
+            else if (System.IO.File.Exists(@"C:\px_red.txt"))
+            {
+                BackColor = ColorTranslator.FromHtml("#FD8686");
+            }
+            else if (System.IO.File.Exists(@"C:\px_yellow.txt"))
+            {
+                BackColor = ColorTranslator.FromHtml("#F2F0B8");
+            }
+            else if (System.IO.File.Exists(@"C:\px_ice.txt"))
+            {
+                BackColor = ColorTranslator.FromHtml("#ECF7FB");
+            }
+            else if (System.IO.File.Exists(@"C:\px_purple.txt"))
+            {
+                BackColor = ColorTranslator.FromHtml("#D3B8F2");
+            }
+            else if (System.IO.File.Exists(@"C:\px_water.txt"))
+            {
+                BackColor = ColorTranslator.FromHtml("#A5DEFF");
+            }
+            else
+            {
+                this.BackColor = Color.Black;
+            }
+
             string timerText = "";
 
             if (hours > 0)
