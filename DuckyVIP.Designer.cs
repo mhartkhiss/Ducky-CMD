@@ -163,6 +163,7 @@
             this.guna2HtmlLabel3.Size = new System.Drawing.Size(126, 19);
             this.guna2HtmlLabel3.TabIndex = 16;
             this.guna2HtmlLabel3.Text = "Isolate Mining Speed";
+            this.guna2HtmlLabel3.DoubleClick += new System.EventHandler(this.guna2HtmlLabel3_DoubleClick);
             // 
             // DuckyVIP
             // 

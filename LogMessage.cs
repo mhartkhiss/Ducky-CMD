@@ -6,15 +6,25 @@ namespace Ducky_CMD
 {
     public partial class LogMessage : UserControl
     {
+        private Timer colorTimer; // Timer to change color after 5 seconds
+        private Color targetColor; // The color to change to after 5 seconds
+
         public LogMessage()
         {
             InitializeComponent();
-            this.Width = 237; // Set the default width of the UserControl
+            this.Width = 237;
             this.AutoSize = false;
-
-            // Ensure messageLabel auto-sizes vertically based on its content
             messageLabel.AutoSize = true;
-            messageLabel.MaximumSize = new Size(this.Width, 0); // Ensure it wraps text within the control's width
+            messageLabel.MaximumSize = new Size(this.Width, 0);
+
+            // Set initial background color to orange
+            guna2Panel1.BackColor = Color.Orange;
+
+            // Initialize and start the timer
+            colorTimer = new Timer();
+            colorTimer.Interval = 5000; // 5 seconds
+            colorTimer.Tick += ColorTimer_Tick;
+            colorTimer.Start();
         }
 
         public string Date
@@ -29,32 +39,30 @@ namespace Ducky_CMD
             set
             {
                 messageLabel.Text = value;
-                AdjustDateLabelPosition(); // Adjust dateLabel position when message is set
+                AdjustDateLabelPosition();
             }
         }
 
         public Color MessageColor
         {
-            get => guna2Panel1.BackColor;
-            set => guna2Panel1.BackColor = value;
+            get => targetColor;
+            set => targetColor = value;
         }
 
         private void AdjustDateLabelPosition()
         {
-            // Move the dateLabel below the messageLabel, with some padding
-            int padding = 5; // Adjust the padding as necessary
+            int padding = 5;
             dateLabel.Top = messageLabel.Bottom + padding;
-
-            // Optionally adjust the height of the UserControl to fit all content
             this.Height = dateLabel.Bottom + padding;
         }
 
-
-
-        private void guna2Panel1_Paint(object sender, PaintEventArgs e)
+        private void ColorTimer_Tick(object sender, EventArgs e)
         {
+            // Stop the timer
+            colorTimer.Stop();
 
+            // Change the background color to the target color
+            guna2Panel1.BackColor = targetColor;
         }
-
     }
 }

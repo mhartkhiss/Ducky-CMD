@@ -32,6 +32,8 @@ namespace Ducky_CMD
         IGN_form ign_form = null;
         private bool showToasts = false, miningStarted = false, logSingleLine = false;
         private string total_dokdok_time = null;
+        private Timer queue_timer = new Timer();
+        private int queue_counter = 0;
 
         public DuckyCMD()
         {
@@ -86,6 +88,10 @@ namespace Ducky_CMD
             dash_iWater.Text = "";
             dash_iYellow.Text = "";
             dash_iRed.Text = "";
+            dash_queueTime.Visible = false;
+            queue_timer.Interval = 1000;
+            queue_timer.Tick += new EventHandler(queue_timer_Tick);
+            queue_timer.Enabled = false;
 
             string jsonString = File.ReadAllText(CONFIG_FILE);
             JObject config = JObject.Parse(jsonString);
@@ -300,6 +306,12 @@ namespace Ducky_CMD
                         counter = 0;
                     }
                     total_dokdok_time = label_timeDiffStart.Text + ", wala ka dokdok";
+
+                    //write the time difference as integer to directory/miningStartETA.txt
+                    try { File.WriteAllText(directory + "/miningStartETA.txt", time_diff2.TotalSeconds.ToString()); }
+                    catch (IOException ex) { writeLog("Error in periodic_timer_Tick() : " + ex.Message); }
+
+
                 }
                 else
                 {
@@ -478,11 +490,63 @@ namespace Ducky_CMD
             farmWatcher.EnableRaisingEvents = true;
         }
 
+        private void queue_timer_Tick(object sender, EventArgs e)
+        {
+            queue_counter--;
+            if (queue_counter <= 0)
+            {
+                try { 
+                    string[] files = Directory.GetFiles(directory + "/farmQueue", "*.txt");
+                    Array.Sort(files, (x, y) => File.GetLastWriteTime(x).CompareTo(File.GetLastWriteTime(y)));
+                    if (files.Length > 0)
+                    {
+                        File.Delete(files[0]);
+                    }
+                }
+                catch (IOException ex)
+                {
+                    writeLog("Error in queue_timer_Tick() : " + ex.Message);
+                }
+            }
+            else { 
+                int minutes = queue_counter / 60;
+                int seconds = queue_counter % 60;
+                dash_queueTime.Text = minutes + " min, " + seconds + " sec";
+            }
+        }
+
         private void OnFileChangedFarm(object sender, FileSystemEventArgs e)
         {
             this.Invoke((MethodInvoker)delegate
             {
                 DashboardUpdate();
+                //if the farmQueue folder has 0 files, set dash_queLabel to "No minions at queue"
+                if (dash_queue.Text == "0")
+                {
+                    dash_queLabel.Text = "No minions at queue";
+                    queue_timer.Stop();
+                    queue_timer.Enabled = false;
+                    queue_counter = 0;
+                    dash_queueTime.Visible = false;
+                }
+                else if (e.ChangeType == WatcherChangeTypes.Created && dash_queue.Text == "1")
+                {
+                    dash_queLabel.Text = "Queueing";
+                    //start the queue_timer if it is not running
+                    if (!queue_timer.Enabled)
+                    {
+                        dash_queueTime.Visible = true;
+                        queue_counter = 210;
+                        queue_timer.Enabled = true;
+                        queue_timer.Start();
+                    }
+                }
+
+                if (e.ChangeType == WatcherChangeTypes.Deleted && dash_queue.Text != "0")
+                {
+                    queue_counter = 210;
+                }
+
             });
         }
 

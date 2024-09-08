@@ -181,6 +181,14 @@ namespace Ducky_CMD
             return ores;
         }
 
+        private void guna2ContainerControl1_DoubleClick(object sender, EventArgs e)
+        {
+            //copy "Z:\MACRODUCK\sync\craftingTime.txt" to Documents folder replace if it exists
+            System.IO.File.Copy(@"Z:\MACRODUCK\sync\craftingTime.txt", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\craftingTime.txt", true);
+            MessageBox.Show("Crafting Time Synced");
+            this.Close();
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             craftingTime--;

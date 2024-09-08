@@ -176,6 +176,7 @@
             this.guna2ContainerControl1.Size = new System.Drawing.Size(341, 49);
             this.guna2ContainerControl1.TabIndex = 9;
             this.guna2ContainerControl1.Text = "guna2ContainerControl1";
+            this.guna2ContainerControl1.DoubleClick += new System.EventHandler(this.guna2ContainerControl1_DoubleClick);
             // 
             // CraftingTimer
             // 

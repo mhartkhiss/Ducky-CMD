@@ -56,7 +56,7 @@
             this.guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
             this.guna2ContainerControl7 = new Guna.UI2.WinForms.Guna2ContainerControl();
             this.guna2PictureBox8 = new Guna.UI2.WinForms.Guna2PictureBox();
-            this.guna2HtmlLabel12 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.dash_queLabel = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.dash_queue = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.dash_gap = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.dash_miningstart = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -132,6 +132,7 @@
             this.guna2AnimateWindow1 = new Guna.UI2.WinForms.Guna2AnimateWindow(this.components);
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.dash_totaldcm = new Guna.UI2.WinForms.Guna2NotificationPaint(this.components);
+            this.dash_queueTime = new Guna.UI2.WinForms.Guna2NotificationPaint(this.components);
             this.guna2TabControl1.SuspendLayout();
             this.tabDashboard.SuspendLayout();
             this.guna2ContainerControl9.SuspendLayout();
@@ -567,7 +568,7 @@
             this.guna2ContainerControl7.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(61)))), ((int)(((byte)(59)))));
             this.guna2ContainerControl7.BorderRadius = 5;
             this.guna2ContainerControl7.Controls.Add(this.guna2PictureBox8);
-            this.guna2ContainerControl7.Controls.Add(this.guna2HtmlLabel12);
+            this.guna2ContainerControl7.Controls.Add(this.dash_queLabel);
             this.guna2ContainerControl7.Controls.Add(this.dash_queue);
             this.guna2ContainerControl7.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.guna2ContainerControl7.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
@@ -594,20 +595,20 @@
             this.guna2PictureBox8.UseTransparentBackground = true;
             this.guna2PictureBox8.Click += new System.EventHandler(this.guna2PictureBox8_Click);
             // 
-            // guna2HtmlLabel12
+            // dash_queLabel
             // 
-            this.guna2HtmlLabel12.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dash_queLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.guna2HtmlLabel12.BackColor = System.Drawing.Color.Transparent;
-            this.guna2HtmlLabel12.Font = new System.Drawing.Font("MS Reference Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.guna2HtmlLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(61)))), ((int)(((byte)(59)))));
-            this.guna2HtmlLabel12.IsSelectionEnabled = false;
-            this.guna2HtmlLabel12.Location = new System.Drawing.Point(74, 12);
-            this.guna2HtmlLabel12.Name = "guna2HtmlLabel12";
-            this.guna2HtmlLabel12.Size = new System.Drawing.Size(168, 18);
-            this.guna2HtmlLabel12.TabIndex = 6;
-            this.guna2HtmlLabel12.Text = "minions queueing at farm";
+            this.dash_queLabel.BackColor = System.Drawing.Color.Transparent;
+            this.dash_queLabel.Font = new System.Drawing.Font("MS Reference Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dash_queLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(61)))), ((int)(((byte)(59)))));
+            this.dash_queLabel.IsSelectionEnabled = false;
+            this.dash_queLabel.Location = new System.Drawing.Point(82, 12);
+            this.dash_queLabel.Name = "dash_queLabel";
+            this.dash_queLabel.Size = new System.Drawing.Size(64, 18);
+            this.dash_queLabel.TabIndex = 6;
+            this.dash_queLabel.Text = "Queueing";
             // 
             // dash_queue
             // 
@@ -620,9 +621,9 @@
             this.dash_queue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(61)))), ((int)(((byte)(59)))));
             this.dash_queue.Location = new System.Drawing.Point(50, 5);
             this.dash_queue.Name = "dash_queue";
-            this.dash_queue.Size = new System.Drawing.Size(20, 35);
+            this.dash_queue.Size = new System.Drawing.Size(26, 35);
             this.dash_queue.TabIndex = 7;
-            this.dash_queue.Text = "3";
+            this.dash_queue.Text = "0";
             this.dash_queue.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
             // 
             // dash_gap
@@ -1755,6 +1756,16 @@
             this.dash_totaldcm.TargetControl = this.guna2ContainerControl6;
             this.dash_totaldcm.Text = "123231 $DCM";
             // 
+            // dash_queueTime
+            // 
+            this.dash_queueTime.Alignment = Guna.UI2.WinForms.Enums.CustomContentAlignment.MiddleRight;
+            this.dash_queueTime.BorderColor = System.Drawing.Color.Transparent;
+            this.dash_queueTime.FillColor = System.Drawing.Color.Tomato;
+            this.dash_queueTime.Location = new System.Drawing.Point(170, 11);
+            this.dash_queueTime.Size = new System.Drawing.Size(90, 18);
+            this.dash_queueTime.TargetControl = this.guna2ContainerControl7;
+            this.dash_queueTime.Text = "5 min , 3 sec";
+            // 
             // DuckyCMD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1896,7 +1907,7 @@
         private Guna.UI2.WinForms.Guna2ContainerControl guna2ContainerControl6;
         private Guna.UI2.WinForms.Guna2HtmlLabel dash_jackpot;
         private Guna.UI2.WinForms.Guna2NotificationPaint dash_totaldcm;
-        private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel12;
+        private Guna.UI2.WinForms.Guna2HtmlLabel dash_queLabel;
         private Guna.UI2.WinForms.Guna2HtmlLabel dash_queue;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel14;
         private Guna.UI2.WinForms.Guna2HtmlLabel dash_bookmark;
@@ -1926,6 +1937,7 @@
         private Guna.UI2.WinForms.Guna2Button guna2Button2;
         private Guna.UI2.WinForms.Guna2Button guna2Button3;
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel15;
+        private Guna.UI2.WinForms.Guna2NotificationPaint dash_queueTime;
     }
 }
 

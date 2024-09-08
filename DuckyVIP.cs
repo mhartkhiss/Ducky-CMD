@@ -18,7 +18,7 @@ namespace Ducky_CMD
         //private string alternateFilePath = $@"{rootPath}\alternate.txt";
         private string filePath = $@"{rootPath}\VIP_ON.txt";
         private bool previousFileExists = false;
-        private System.Windows.Forms.Timer checkTimer, vipOnTimer, Catching_Timer, OnChain_Timer, Mining_Timer;
+        private System.Windows.Forms.Timer checkTimer, vipOnTimer, Catching_Timer, OnChain_Timer;
         private string[] modeFiles = { "mode_Mining.txt", "mode_Fishing.txt", "mode_Farming.txt",
             "mode_Crafting.txt", "mode_OpenGift.txt",  "mode_AutoMining.txt", "mode_FullAuto.txt"};
         private string[] modeMCR = {"4-mining.mcr", "1-START-duckyFishing.mcr", "6-START-farming only.mcr",
@@ -27,7 +27,7 @@ namespace Ducky_CMD
         private Color[] modeColors = { Color.FromArgb(255, 236, 161), Color.FromArgb(145, 210, 255), Color.FromArgb(164, 255, 164),
                    Color.FromArgb(255, 185, 79), Color.FromArgb(233, 154, 255), Color.FromArgb(141, 111, 100), Color.FromArgb(254, 155, 156)};
         private Color windowColor = Color.FromArgb(0, 2, 255);
-        private Thread keywordCheckThread, miningThread;
+        private Thread keywordCheckThread;
         private bool isCheckingKeywords;
 
         [DllImport("user32.dll")]
@@ -51,7 +51,7 @@ namespace Ducky_CMD
         private const uint SWP_NOZORDER = 0x0004;
         Island island = new Island();
         private string catching_message = null, onchain_message = null, mining_message = null;
-        private int catching_counter = 0, onchain_counter = 0, mining_counter = 0;
+        private int catching_counter = 0, onchain_counter = 0;
 
 
         public DuckyVIP()
@@ -88,6 +88,7 @@ namespace Ducky_CMD
             OnChain_Timer.Interval = 1000; // Check every second
             OnChain_Timer.Tick += OnChain_timer_Tick;
             OnChain_Timer.Enabled = false;
+
         }
 
         private void VipOnTimer_Tick(object sender, EventArgs e)
@@ -124,19 +125,6 @@ namespace Ducky_CMD
             }
             else
                 onchain_counter++;
-        }
-
-        private void Mining_timer_Tick(object sender, EventArgs e)
-        {
-            if (mining_counter > 70)
-            {
-                mining_counter = 0;
-                mining_message = null;
-                Mining_Timer.Stop();
-                Mining_Timer.Enabled = false;
-            }
-            else
-                mining_counter++;
         }
 
         private void CheckModeFiles()
@@ -309,13 +297,10 @@ namespace Ducky_CMD
             string counterFilePath = @"Z:\MACRODUCK\jackpot_counter.txt";
             string totalDcmFilePath = @"Z:\MACRODUCK\total_dcm.txt";
 
-            //int left = 26, top = 185, width = 461, height = 68;
             int left = 66, top = 198, width = 395, height = 87;
             Rectangle region = new Rectangle(left, top, width, height);
 
             var keywords = LoadKeywords(keywordsFilePath);
-            //add "winning" and "for" to the list of keywords
-            //keywords = keywords.Concat(new string[] { "for"}).ToArray();
 
             while (isCheckingKeywords)
             {
@@ -342,9 +327,10 @@ namespace Ducky_CMD
 
                         var foundKeyword = keywords.FirstOrDefault(keyword => text.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0);
 
-                        if (text.Contains("winning") && mining_message != text)
+                        FileInfo fi = new FileInfo(@"Z:\MACRODUCK\lastjackpot.txt");
+                        if (text.Contains("for") && fi.LastWriteTime < DateTime.Now.AddSeconds(-65))
                         {
-                            mining_message = text;
+                            //mining_message = text;
                             if (!string.IsNullOrEmpty(foundKeyword)) { 
                                 using (StreamWriter sw = File.CreateText(@"Z:\MACRODUCK\jackpot.config"))
                                 {
@@ -359,12 +345,6 @@ namespace Ducky_CMD
                                 }
                             }
                             File.SetLastWriteTime(@"Z:\MACRODUCK\lastjackpot.txt", DateTime.Now);
-                            mining_counter = 0;
-                            if (!Mining_Timer.Enabled)
-                            {
-                                Mining_Timer.Enabled = true;
-                                Mining_Timer.Start();
-                            }
                         }
 
                         else if (!string.IsNullOrEmpty(foundKeyword) && text.Contains("catching") && catching_message != text)
@@ -463,13 +443,13 @@ namespace Ducky_CMD
             return match.Success ? int.Parse(match.Groups[1].Value) : 0;
         }
 
-
-        private void RemoveFileSafely(string filePath)
+        private void guna2HtmlLabel3_DoubleClick(object sender, EventArgs e)
         {
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
+            File.Copy(@"Z:\MACRODUCK\sync\craftingTime.txt", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\craftingTime.txt", true);
+            MessageBox.Show("Crafting Time Synced");
+            //terminate the process "miningTime"
+            kill_process("miningTime");
+            this.Close();
         }
 
         private void DuckyVIP_FormClosing(object sender, FormClosingEventArgs e)
@@ -551,10 +531,6 @@ namespace Ducky_CMD
             Clipboard.SetText(comboBox_miningSpeed.SelectedItem.ToString());
         }
 
-        private void toggleAlternate_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void guna2PictureBox2_Click(object sender, EventArgs e)
         {
